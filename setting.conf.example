@@ -1,0 +1,15 @@
+# dnspod api
+# 建议使用 token 方式鉴权
+# dnspodMail="test@gmail.com"
+# dnspodPass="password"
+
+# 以下填写 dnspod 提供的 id 和 token，使用英文逗号分隔
+# dnspodToken="1234,7676f344eaeaea9074c123451234512d"
+
+# 以下填写主域名以及需要动态更新的子域名
+# 子域名为数组格式填写，使用空格分隔
+# domainName="test.com"
+# subDomainName=("ddns1" "ddns2")
+
+# 填写拨号后公网 ip 所在的网卡名称
+# interface="ppp0"
