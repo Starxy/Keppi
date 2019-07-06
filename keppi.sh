@@ -130,7 +130,7 @@ dnsInfo() {
 # Get data
 # arg: type data
 apiPost() {
-    local agent="DJX DDNS/1.0(galaxy_djx@hotmail.com)"
+    local agent="DJXDDNS/1.0(galaxy_djx@hotmail.com)"
     local inter="https://dnsapi.cn/${1:?'Info.Version'}"
     if [ "x${dnspodToken}" = "x" ]; then # undefine token
         local param="login_email=${dnspodMail}&login_password=${dnspodPass}&format=json&${2}"
