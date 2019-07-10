@@ -5,7 +5,7 @@
 
 # Debugging
 if [[ -d ".dev-debug" ]]; then
-  exec 5>".dev-debug/dev-debug-[$(date +'%Y-%m-%dT%H:%M:%S%z')].log"
+  exec 5>".dev-debug/dev-debug-[$(date +'%Y-%m-%dT%H:%M:%S%z'z)].log"
   BASH_XTRACEFD="5"
   set -x
 fi
@@ -15,32 +15,9 @@ root_dir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 functions_dir="${root_dir}/functions"
 config_file_path="${root_dir}/setting.conf"
 
-
-start_check(){
-  count=1
-  while [ $count -le 30 ]; 
-  do
-    if checkInterfaceIp ; then
-        reNewPPPoE
-      else
-        echo "get public ip address"
-        startUpdateDns
-        break
-    fi
-    if [ $count -eq 30 ]; then
-      echo "cant get public ip address"
-      exit 1
-    fi
-    let "count++"
-  done 
-}
-
-startUpdateDns(){
-  for sub in ${subDomainName[*]}
-  do
-    dnsCheck ${domainName} ${sub}
-  done
-}
+source "${functions_dir}/utils.sh"
+source "${functions_dir}/dnspod.sh"
+source "${functions_dir}/interface.sh"
 
 if [[ -f "${config_file_path}" ]]; then
   source "${config_file_path}"
@@ -56,5 +33,14 @@ fi
 
 if [[ -z "${interface}" ]]; then
   err "please fill in interface name"
+  exit 1
+fi
+
+if [[ "$(check_interface_ip "${interface}")" ]]; then
+  for sub in ${sub_domain_name[*]}; do
+    dnsCheck ${domain_name} ${sub}
+  done
+else
+  err "cant get public address"
   exit 1
 fi

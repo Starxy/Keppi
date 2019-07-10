@@ -59,7 +59,7 @@ dns_update() {
     record_id="$(echo "${record_id}" | sed 's/.*\[{"id":"\([0-9]*\)".*/\1/')"
     
     # Update IP
-    my_ip="$(getInterfaceIp)"
+    my_ip="$(get_interface_ip)"
     record_rs="$(api_post "Record.Ddns" "domain_id=${domain_id}& \
       record_id=${record_id}&sub_domain=$2&record_type=A&value=${my_ip}& \
       record_line=默认")"
@@ -87,10 +87,10 @@ dns_update() {
 dns_check() {
     host_ip="$(getInterfaceIp)"
     msg "Updating Domain: $2.$1"
-    msg "hostIP: ${hostIP}"
-    last_ip="$(dns_info $1 $2)"
+    msg "hostIP: ${host_ip}"
+    last_ip="$(dns_info "$1" "$2")"
     if [[ $? -eq 0 ]]; then
-        msg "lastIP: ${lastIP}"
+        msg "lastIP: ${last_ip}"
         if [[ "${host_ip}" != "${last_ip}" ]]; then
             post_rs="$(dns_update "$1" "$2")"
             if [[ $? -eq 0 ]]; then
