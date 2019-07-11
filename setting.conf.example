@@ -9,3 +9,12 @@
 
 # 填写拨号后公网 ip 所在的网卡名称
 # interface="ppp0"
+
+# 反注释以下字段开启telegram bot 提醒
+# tg_bot="1"
+# 机器人token
+# tg_bot_token="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
+# 可用的 chat_id
+# tg_chat_id="245678910"
+# 是否开启代理
+# proxy="1"
