@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # 获取网卡 ip
 get_interface_ip(){
   extip="$(ip -o -4 addr list | grep "$1" | awk '{print $4}' | cut -d/ -f1)"
@@ -16,7 +18,7 @@ check_interface_ip(){
 
 # 重新拨号
 renew_pppoe(){
-  if [[ "$(require poff)" ]]&&[["$(rqeuire pon)"]];then
+  if [[ "$(require poff)" && "$(rqeuire pon)"]];then
     poff && pon dsl-provider
     sleep 5
   fi
