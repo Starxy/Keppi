@@ -16,5 +16,5 @@
 # tg_bot_token="123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
 # 可用的 chat_id
 # tg_chat_id="245678910"
-# 是否开启代理
-# proxy="1"
+# 反注释代表开启代理，准确填写协议格式，代理地址，端口
+# tg_proxy="socks5://127.0.0.1:1080"

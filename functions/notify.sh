@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # 单发短信
 smsSingleSender(){
@@ -6,9 +6,9 @@ smsSingleSender(){
 }
 
 notice_msg(){
-  if [[ -z "${tg_bot}" ]]; then
+  if [[ -n "${tg_bot}" ]]; then
     # 开启 telegram bot 提醒
-    if [[ -z "${tg_bot_token}" && -z "${tg_chat_id}" ]]; then
+    if [[ -n "${tg_bot_token}" && -n "${tg_chat_id}" ]]; then
       echo "$(tg_bot_msg "$1")"
       return 0
     else
@@ -20,8 +20,10 @@ notice_msg(){
 tg_bot_msg(){
   local url="https://api.telegram.org/bot${tg_bot_token}/sendMessage"
   local params="chat_id=${tg_chat_id}&text=$1"
-  if [[ require "wget" ]]; then
-      wget --quiet --no-check-certificate  --output-document=- \
-      --post-data "${params}" "${url}"
+  if [[ require "curl" ]]; then
+    if [[ n "${tg_proxy}" ]]
+      curl --preproxy "${tg_proxy}" -s -k -X POST "${url}" -d "${params}"
+    else
+      curl -s -k -X POST "${url}" -d "${params}"
   fi
 }

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # dnspod api
 # Original by anrip<mail@anrip.com>, https://github.com/anrip/ArDNSPod
 
@@ -19,14 +19,10 @@ dns_info() {
     record_id=${record_id}")"
   record_ip="$(echo "${record_ip}" | sed 's/.*,"value":"\([0-9\.]*\)".*/\1/')"
   #check is a ip adreess
-  record_ip="$(echo "${record_ip}" | grep -E "(25[0-5]|2[0-4][[:digit:]]| \
-    [0-1][[:digit:]]{2}|[1-9]?[[:digit:]])\.(25[0-5]|2[0-4][[:digit:]]|[0-1] \
-    [[:digit:]]{2}|[1-9]?[[:digit:]])\.(25[0-5]|2[0-4][[:digit:]]|[0-1] \
-    [[:digit:]]{2}|[1-9]?[[:digit:]])\.(25[0-5]|2[0-4][[:digit:]]|[0-1] \
-    [[:digit:]]{2}|[1-9]?[[:digit:]])")"
+  record_ip="$(echo "${record_ip}" | grep -E "(25[0-5]|2[0-4][[:digit:]]|[0-1][[:digit:]]{2}|[1-9]?[[:digit:]])\.(25[0-5]|2[0-4][[:digit:]]|[0-1][[:digit:]]{2}|[1-9]?[[:digit:]])\.(25[0-5]|2[0-4][[:digit:]]|[0-1][[:digit:]]{2}|[1-9]?[[:digit:]])\.(25[0-5]|2[0-4][[:digit:]]|[0-1][[:digit:]]{2}|[1-9]?[[:digit:]])")"
 
   # Output IP
-  if [[ -z "${record_ip}" ]]; then
+  if [[ -n "${record_ip}" ]]; then
     echo "${record_ip}"
     return 0
   else
@@ -41,15 +37,15 @@ api_post() {
     local agent="DJXDDNS/1.0(galaxy_djx@hotmail.com)"
     local inter="https://dnsapi.cn/${1:?'Info.Version'}"
     local param="login_token=${dnspod_token}&format=json&$2"
-
-    wget --quiet --no-check-certificate  --output-document=- \
-      --user-agent="${agent}" --post-data "${param}" "${inter}"
+    if [[ "$(command -v curl)" ]]; then
+      curl -s -k --user-agent "${agent}" -X POST "${inter}" -d "${param}"
+    fi
 }
 
 # Update
 # arg: main domain  sub domain
 dns_update() {
-    local domain_id record_id record_rs record_cd
+    local domain_id record_id record_rs record_cd my_ip
     # Get domain ID
     domain_id="$(api_post "Domain.Info" "domain=$1")"
     domain_id="$(echo "${domain_id}" | sed 's/.*{"id":"\([0-9]*\)".*/\1/')"
@@ -59,7 +55,8 @@ dns_update() {
     record_id="$(echo "${record_id}" | sed 's/.*\[{"id":"\([0-9]*\)".*/\1/')"
     
     # Update IP
-    my_ip="$(get_interface_ip)"
+    my_ip="$(get_wan_ip)"
+
     record_rs="$(api_post "Record.Ddns" "domain_id=${domain_id}& \
       record_id=${record_id}&sub_domain=$2&record_type=A&value=${my_ip}& \
       record_line=默认")"
@@ -85,7 +82,7 @@ dns_update() {
 # DDNS Check
 # Arg: Main Sub
 dns_check() {
-    host_ip="$(getInterfaceIp)"
+    host_ip="$(get_wan_ip)"
     msg "Updating Domain: $2.$1"
     msg "hostIP: ${host_ip}"
     last_ip="$(dns_info "$1" "$2")"

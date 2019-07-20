@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # 检测本地网卡 ip 是否为内网
 # 如果为内网 ip 则重新拨号
 # 公网 ip 则更新 ddns 记录
@@ -41,10 +41,11 @@ fi
 #   exit 1
 # fi
 
+source "${functions_dir}/ip.sh"
 
-if [[ "$(check_interface_ip "${interface}")" ]]; then
+if [[ "$(check_inter_ip "$(get_wan_ip)")" ]]; then
   for sub in ${sub_domain_name[*]}; do
-    dnsCheck ${domain_name} ${sub}
+    dns_check "${domain_name}" "${sub}"
   done
 else
   err "cant get public address"
