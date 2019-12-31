@@ -48,11 +48,11 @@ dns_update() {
     local domain_id record_id record_rs record_cd my_ip
     # Get domain ID
     domain_id="$(api_post "Domain.Info" "domain=$1")"
-    domain_id="$(echo "${domain_id}" | sed 's/.*{"id":"\([0-9]*\)".*/\1/')"
+    domain_id="$(echo "${domain_id}" | sed 's/.*"id":"\([0-9]*\)".*/\1/')"
     
     # Get Record ID
     record_id="$(api_post "Record.List" "domain_id=${domain_id}&sub_domain=$2")"
-    record_id="$(echo "${record_id}" | sed 's/.*\[{"id":"\([0-9]*\)".*/\1/')"
+    record_id="$(echo "${record_id}" | sed 's/.*"id":"\([0-9]*\)".*/\1/')"
     
     # Update IP
     my_ip="$(get_wan_ip)"
